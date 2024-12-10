@@ -5,6 +5,9 @@ import android.content.Intent
 import android.graphics.Color
 import java.util.Calendar
 import android.os.Bundle
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
+import com.example.cs134onimaidsfinal.Activity.SearchFragment
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
@@ -24,6 +27,8 @@ import okhttp3.Callback
 import retrofit2.Call
 import retrofit2.Response
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -33,6 +38,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //added here
+        val addCity: ImageView = findViewById(R.id.addCity)
+        addCity.setOnClickListener {
+//            loadFragment(SearchFragment())
+            var intent = Intent(this, AddCityActivity::class.java)
+            startActivity(intent)
+//            findNavController(R.id.nav_host_fragment).navigate(R.id.action_mainActivity_to_addCityActivity)
+        } //end here
 
 
         window.apply {
@@ -84,6 +98,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+
         private fun isNightNow(): Boolean {
             return calendar.get(Calendar.HOUR_OF_DAY) >= 18
         }
@@ -98,5 +114,14 @@ class MainActivity : AppCompatActivity() {
                 else -> 0
             }
         }
+
+    //added here
+    private fun loadFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    } //end here
+
     }
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/mainActivity">
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.cs134onimaidsfinal.Activity.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main">
+
+    </activity>
+    <activity
+        android:id="@+id/addCityActivity"
+        android:name="com.example.cs134onimaidsfinal.Activity.AddCityActivity"
+        android:label="activity_add_city"
+        tools:layout="@layout/activity_add_city" />
+    <action
+        android:id="@+id/action_mainActivity_to_addCityActivity"
+        app:destination="@id/addCityActivity" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.cs134onimaidsfinal.Activity.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+</navigation>

@@ -43,14 +43,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //added here
-        val addCity: Button = findViewById(R.id.addCity)
-        addCity.setOnClickListener {
-//            loadFragment(SearchFragment())
-            var intent = Intent(this, AddCityActivity::class.java)
-            startActivity(intent)
-//            findNavController(R.id.nav_host_fragment).navigate(R.id.action_mainActivity_to_addCityActivity)
-        } //end here
+
 
 
         window.apply {
@@ -59,9 +52,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.apply {
-            var lat = 33.20
-            var lon = -117.38
+//            var lat = intent.getDoubleExtra("lat", 0.0)
+//            var lon = intent.getDoubleExtra("lon", 0.0)
+//            var name = intent.getStringExtra("name")
+
+
+            //if (lat == 0.0) {
+            var lat = 33.1959
+            var lon = -117.3795
             var name = "Oceanside"
+           // }
+
+            //added here
+            val addCity: Button = findViewById(R.id.addCity)
+            addCity.setOnClickListener {
+//            loadFragment(SearchFragment())
+                startActivity(Intent(this@MainActivity, AddCityActivity::class.java))
+//            findNavController(R.id.nav_host_fragment).navigate(R.id.action_mainActivity_to_addCityActivity)
+            } //end here
 
             cityTxt.text = name
             progressBar.visibility = View.VISIBLE
@@ -80,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
                             data?.let {
                                 binding.statusTxt.text = it.weather?.get(0)?.main ?: "-"
-                                binding.windTxt.text = it.wind?.speed?.let { Math.round(it).toString() } + "mph"
+                                binding.windTxt.text = it.wind?.speed?.let { Math.round(it).toString() } + " mph"
                                 binding.humidityTxt.text = it.main?.humidity?.toString() + "%"
                                 binding.currentTempTxt.text = it.main?.temp?.let { Math.round(it).toString() } + "°"
                                 binding.maxTempTxt.text = it.main?.tempMax?.let { Math.round(it).toString() } + "°"
@@ -144,11 +152,11 @@ class MainActivity : AppCompatActivity() {
 
         private fun setDynamicallyWallpaper(icon: String): Int {
             return when (icon.dropLast(1)) {
-                "01" -> R.drawable.night_bg
-                "02", "03", "04" -> R.drawable.cloudy_bg
-                "09", "10", "11" -> R.drawable.rainy_bg
-                "13" -> R.drawable.snow_bg
-                "50" -> R.drawable.haze_bg
+                "01" -> R.drawable.nightbg
+                "02", "03", "04" -> R.drawable.cloudybg
+                "09", "10", "11" -> R.drawable.rainbg
+                "13" -> R.drawable.snowybg
+                "50" -> R.drawable.hazebg
                 else -> 0
             }
         }

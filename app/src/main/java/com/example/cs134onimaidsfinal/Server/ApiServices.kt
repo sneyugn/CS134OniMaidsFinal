@@ -4,6 +4,8 @@ import com.example.cs134onimaidsfinal.model.CurrentResponseApi
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 interface ApiServices {
 
@@ -14,4 +16,18 @@ interface ApiServices {
         @Query("units") units:String,
         @Query("appid") ApiKey:String,
     ): Call<CurrentResponseApi>
+
+
+    // Add a new function to get the weather by city name, Emily added
+    companion object {
+        private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
+
+        fun create(): ApiServices {
+            val retrofit = Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(BASE_URL)
+                .build()
+            return retrofit.create(ApiServices::class.java)
+        }
+    }
 }

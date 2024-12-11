@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -22,6 +23,8 @@ import androidx.lifecycle.ViewModelLazy
 import com.example.cs134onimaidsfinal.R
 import com.example.cs134onimaidsfinal.ViewModel.WeatherViewModel
 import com.example.cs134onimaidsfinal.databinding.ActivityMainBinding
+import com.example.cs134onimaidsfinal.Adapter.ForecastAdapter
+import com.example.cs134onimaidsfinal.model.ForecastResponseApi
 import com.example.cs134onimaidsfinal.model.CurrentResponseApi
 import okhttp3.Callback
 import retrofit2.Call
@@ -34,13 +37,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val weatherViewModel:WeatherViewModel by viewModels()
     private val calendar by lazy { Calendar.getInstance() }
+    private val forecastAdapter by lazy { ForecastAdapter() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         //added here
-        val addCity: ImageView = findViewById(R.id.addCity)
+        val addCity: Button = findViewById(R.id.addCity)
         addCity.setOnClickListener {
 //            loadFragment(SearchFragment())
             var intent = Intent(this, AddCityActivity::class.java)
@@ -63,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             progressBar.visibility = View.VISIBLE
 
 
-            weatherViewModel.loadCurrentWeather(lat, lon, "metric")
+            weatherViewModel.loadCurrentWeather(lat, lon, "imperial")
                 .enqueue(object : retrofit2.Callback<CurrentResponseApi> {
                     override fun onResponse(
                         call: Call<CurrentResponseApi>,
@@ -76,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
                             data?.let {
                                 binding.statusTxt.text = it.weather?.get(0)?.main ?: "-"
-                                binding.windTxt.text = it.wind?.speed?.let { Math.round(it).toString() } + "Km"
+                                binding.windTxt.text = it.wind?.speed?.let { Math.round(it).toString() } + "mph"
                                 binding.humidityTxt.text = it.main?.humidity?.toString() + "%"
                                 binding.currentTempTxt.text = it.main?.temp?.let { Math.round(it).toString() } + "°"
                                 binding.maxTempTxt.text = it.main?.tempMax?.let { Math.round(it).toString() } + "°"
@@ -95,6 +99,40 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, t.toString(), Toast.LENGTH_SHORT).show()
                     }
                 })
+
+//forecast temp
+            weatherViewModel.loadForecastWeather(lat, lon, "imperial")
+                .enqueue(object : retrofit2.Callback<ForecastResponseApi> {
+                    override fun onResponse(
+                        call: Call<ForecastResponseApi>,
+                        response: Response<ForecastResponseApi>
+                    ) {
+                        if (response.isSuccessful) {
+                            val data = response.body()
+                            blueView.visibility = View.VISIBLE
+
+                            data?.let {
+                                forecastAdapter.differ.submitList(it.list)
+                                forecastView.apply {
+                                    layoutManager = LinearLayoutManager(
+                                        this@MainActivity,
+                                        LinearLayoutManager.HORIZONTAL,
+                                        false
+                                    )
+                                    adapter = forecastAdapter
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ForecastResponseApi>, t: Throwable) {
+
+                    }
+
+                })
+
+
+
         }
     }
 

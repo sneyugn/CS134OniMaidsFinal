@@ -70,7 +70,7 @@ class AddCityActivity : AppCompatActivity() {
         val weatherApiService = ApiServices.create()
         val lon = 0.0
         val lat = 0.0
-        weatherApiService.getCurrentWeather(lat, lon, "metric", "3186f6ad03694127d4157192c03d3960")
+        weatherApiService.getCurrentWeather(lat, lon, "imperial", "3186f6ad03694127d4157192c03d3960")
             .enqueue(object : Callback<CurrentResponseApi> {
                 override fun onResponse(call: Call<CurrentResponseApi>, response: Response<CurrentResponseApi>) {
                     if (response.isSuccessful) {

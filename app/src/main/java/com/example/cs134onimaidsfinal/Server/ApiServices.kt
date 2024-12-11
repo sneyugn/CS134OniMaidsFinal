@@ -1,6 +1,7 @@
 package com.example.cs134onimaidsfinal.Server
 
 import com.example.cs134onimaidsfinal.model.CurrentResponseApi
+import com.example.cs134onimaidsfinal.model.ForecastResponseApi
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -30,4 +31,13 @@ interface ApiServices {
             return retrofit.create(ApiServices::class.java)
         }
     }
+
+    @GET("data/2.5/forecast")
+    fun getForecastWeather(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("units") units: String,
+        @Query("appid") ApiKey: String,
+    ): Call<ForecastResponseApi>
+
 }

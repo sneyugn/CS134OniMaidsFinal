@@ -59,9 +59,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.apply {
-            var lat = 33.22
-            var lon = -117.35
-            var name = "California"
+            var lat = 33.20
+            var lon = -117.38
+            var name = "Oceanside"
 
             cityTxt.text = name
             progressBar.visibility = View.VISIBLE

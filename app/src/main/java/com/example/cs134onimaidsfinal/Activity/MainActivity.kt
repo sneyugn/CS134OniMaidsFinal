@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelLazy
@@ -38,6 +39,20 @@ class MainActivity : AppCompatActivity() {
     private val weatherViewModel:WeatherViewModel by viewModels()
     private val calendar by lazy { Calendar.getInstance() }
     private val forecastAdapter by lazy { ForecastAdapter() }
+    private val addCityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data ?: return@registerForActivityResult
+            val cityName = data.getStringExtra("cityName") ?: return@registerForActivityResult
+            val lat = data.getDoubleExtra("lat", 0.0)
+            val lon = data.getDoubleExtra("lon", 0.0)
+            val temp = data.getDoubleExtra("temp", 0.0)
+            binding.cityTxt.text = cityName
+            binding.currentTempTxt.text = "$temp°C"
+            weatherViewModel.loadCurrentWeather(lat, lon, "imperial")
+            weatherViewModel.loadForecastWeather(lat, lon, "imperial")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -73,7 +88,8 @@ class MainActivity : AppCompatActivity() {
 
             cityTxt.text = name
             progressBar.visibility = View.VISIBLE
-
+            weatherViewModel.loadCurrentWeather(33.1959, -117.3795, "imperial")
+            weatherViewModel.loadForecastWeather(33.1959, -117.3795, "imperial")
 
             weatherViewModel.loadCurrentWeather(lat, lon, "imperial")
                 .enqueue(object : retrofit2.Callback<CurrentResponseApi> {

@@ -19,6 +19,13 @@ interface ApiServices {
         @Query("appid") ApiKey:String,
     ): Call<CurrentResponseApi>
 
+    @GET("geo/1.0/direct")
+    fun getCityCoordinates(
+        @Query("q") cityName: String,
+        @Query("limit") limit: Int,
+        @Query("appid") apiKey: String
+    ): Call<List<CityResponseApi>>
+
 
     // Add a new function to get the weather by city name, Emily added
     companion object {

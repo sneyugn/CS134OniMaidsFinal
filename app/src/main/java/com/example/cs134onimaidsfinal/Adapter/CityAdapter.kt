@@ -39,6 +39,8 @@ class CityAdapter : RecyclerView.Adapter<CityAdapter.ViewHolder>() {
 
     }
 
+
+
     inner class ViewHolder : RecyclerView.ViewHolder(binding.root)
 
     override fun getItemCount() = differ.currentList.size

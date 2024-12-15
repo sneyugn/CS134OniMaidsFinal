@@ -2,6 +2,7 @@ package com.example.cs134onimaidsfinal.Activity
 
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import java.util.Calendar
 import android.os.Bundle
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     private val weatherViewModel:WeatherViewModel by viewModels()
     private val calendar by lazy { Calendar.getInstance() }
     private val forecastAdapter by lazy { ForecastAdapter() }
+    private lateinit var sharedPreferences: SharedPreferences
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -38,6 +42,10 @@ class MainActivity : AppCompatActivity() {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             statusBarColor = Color.TRANSPARENT
         }
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("SearchHistory", MODE_PRIVATE)
+
 
         binding.apply {
             var lat = intent.getDoubleExtra("lat", 0.0)
@@ -51,7 +59,9 @@ class MainActivity : AppCompatActivity() {
                 name = "Oceanside"
            }
 
+            // Save city name to SharedPreferences when the Add City button is clicked
             addCity.setOnClickListener {
+                saveSearch(name)
                 startActivity(Intent(this@MainActivity, CityListActivity::class.java))
             }
 
@@ -125,6 +135,20 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+    // Save the search to SharedPreferences
+    private fun saveSearch(cityName: String?) {
+        if (cityName == null || cityName.isEmpty()) return
+
+        val editor = sharedPreferences.edit()
+        val savedSearches = sharedPreferences.getStringSet("SearchList", mutableSetOf()) ?: mutableSetOf()
+
+        savedSearches.add(cityName) // Add the new search
+        editor.putStringSet("SearchList", savedSearches)
+        editor.apply()
+        Toast.makeText(this, "$cityName saved to search history", Toast.LENGTH_SHORT).show()
+    }
+
 
         private fun isNightNow(): Boolean {
             return calendar.get(Calendar.HOUR_OF_DAY) >= 18

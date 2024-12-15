@@ -86,10 +86,10 @@ class MainActivity : AppCompatActivity() {
                                 binding.maxTempTxt.text = it.main?.tempMax?.let { Math.round(it).toString() } + "°"
                                 binding.minTempTxt.text = it.main?.tempMin?.let { Math.round(it).toString() } + "°"
 
-                                val drawable = if (isNightNow()) R.drawable.nightbg
-                                else {
-                                    setDynamicallyWallpaper(it.weather?.get(0)?.icon ?: "-")
-                                }
+//                                val drawable = if (isNightNow()) R.drawable.nightbg
+//                                else {
+                                    val drawable = setDynamicallyWallpaper(it.weather?.get(0)?.icon ?: "-")
+//                                }
                                 binding.bgImage.setImageResource(drawable)
                             }
                         }
@@ -151,7 +151,8 @@ class MainActivity : AppCompatActivity() {
 
 
         private fun isNightNow(): Boolean {
-            return calendar.get(Calendar.HOUR_OF_DAY) >= 18
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            return hour >= 18 || hour < 6
         }
 
         private fun setDynamicallyWallpaper(icon: String): Int {
